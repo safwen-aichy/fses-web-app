@@ -151,7 +151,7 @@ export default function UTMLoginPage() {
                 className="text-sm text-burgundy-600 hover:text-burgundy-800 underline"
                 onClick={(e) => {
                   e.preventDefault();
-                  alert('Please contact system administrator for password reset');
+                  navigate('/forgot-password'); 
                 }}
               >
                 Forgot Password?

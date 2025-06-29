@@ -11,6 +11,7 @@ import ProgramCoordinator from "../pages/ProgramCoordinator";
 import PGAM from "../pages/PGAM";
 import ProtectedRoute from "../components/ProtectedRoute";
 import FirstTime from "../pages/FirstTime";
+import ForgotPassword from "../pages/ForgotPassword";
 
 export const router = createBrowserRouter([
     {
@@ -57,6 +58,12 @@ export const router = createBrowserRouter([
                 path: '/first-time-setup',
                 element: (
                     <FirstTime />
+                )
+            },
+            {
+                path: '/forgot-password',
+                element: (
+                    <ForgotPassword />
                 )
             }
         ],
