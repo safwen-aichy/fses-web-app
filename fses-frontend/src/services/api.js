@@ -1,5 +1,6 @@
 // src/services/api.js
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
@@ -9,6 +10,7 @@ const api = axios.create({
   withCredentials: true, // Important for session auth
   headers: {
     'Content-Type': 'application/json',
+    'X-CSRFToken': Cookies.get('csrftoken') || '',
   },
 });
 
@@ -16,19 +18,21 @@ const api = axios.create({
 let csrfToken = null;
 
 const getCSRFToken = async () => {
-  if (!csrfToken) {
+  if (!csrfToken || csrfToken) {
     try {
       const response = await api.get('/auth/csrf/');
       // Get CSRF token from cookie or response header
       const cookies = document.cookie.split(';');
-      const csrfCookie = cookies.find(cookie => cookie.trim().startsWith('csrftoken='));
+      const csrfCookie = Cookies.get('csrftoken') || '';
       if (csrfCookie) {
-        csrfToken = csrfCookie.split('=')[1];
+        csrfToken = csrfCookie;
       }
     } catch (error) {
       console.error('Failed to get CSRF token:', error);
     }
   }
+  console.log('CSRF Token:', csrfToken); // Debugging line to check CSRF token
+  console.log('Cookies:', Cookies.get('csrftoken')); // Debugging line to check cookies
   return csrfToken;
 };
 
@@ -67,7 +71,7 @@ export const authAPI = {
 export const studentAPI = {
   getAll: () => api.get('/fses/api/students/'),
   getById: (id) => api.get(`/fses/api/student/${id}/`),
-  create: (data) => api.post('/fses/api/student/create/', data),  // Note the trailing slash
+  create: (data) => api.post('/fses/api/student/create', data),  // Note the trailing slash
   update: (id, data) => api.put(`/fses/api/student/update/${id}/`, data),
   delete: (id) => api.delete(`/fses/api/student/delete/${id}/`),
 };

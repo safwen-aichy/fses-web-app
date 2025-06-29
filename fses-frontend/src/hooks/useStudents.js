@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { studentAPI } from '../services/api';
+import { authAPI } from '../services/api';
 
 export const useStudents = () => {
   const [students, setStudents] = useState([]);
@@ -22,6 +23,9 @@ export const useStudents = () => {
 
   const createStudent = async (studentData) => {
     try {
+      await authAPI.getCSRFToken();
+
+      console.log("Creating student with data:", studentData);
       const response = await studentAPI.create(studentData);
       setStudents([...students, response.data]);
       return { success: true, data: response.data };

@@ -10,6 +10,7 @@ import Supervisor from "../pages/Supervisor";
 import ProgramCoordinator from "../pages/ProgramCoordinator";
 import PGAM from "../pages/PGAM";
 import ProtectedRoute from "../components/ProtectedRoute";
+import FirstTime from "../pages/FirstTime";
 
 export const router = createBrowserRouter([
     {
@@ -50,6 +51,12 @@ export const router = createBrowserRouter([
                     <ProtectedRoute requiredRole="PGAM">
                         <PGAM />
                     </ProtectedRoute>
+                )
+            },
+            {
+                path: '/first-time-setup',
+                element: (
+                    <FirstTime />
                 )
             }
         ],

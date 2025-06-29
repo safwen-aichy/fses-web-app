@@ -25,21 +25,30 @@ export default function UTMLoginPage() {
     if (result.success) {
       // Navigate based on user role from Django backend
       const user = result.user;
-      switch (user.role) {
-        case 'OFFICE_ASSISTANT':
-          navigate('/officeAssistant');
-          break;
-        case 'SUPERVISOR':
-          navigate('/supervisor');
-          break;
-        case 'PROGRAM_COORDINATOR':
-          navigate('/programCoordinator');
-          break;
-        case 'PGAM':
-          navigate('/pgam');
-          break;
-        default:
-          setError('Unknown user role. Please contact administrator.');
+      const isFirstTime = user.is_first_time || false;
+      console.log(isFirstTime); 
+      if (isFirstTime) {
+        // Redirect to first time setup page
+        navigate('/first-time-setup');
+        return;
+      } else {
+        console.log(user.role); // Debugging line to check user role
+        switch (user.role) {
+          case 'OFFICE_ASSISTANT':
+            navigate('/officeAssistant');
+            break;
+          case 'SUPERVISOR':
+            navigate('/supervisor');
+            break;
+          case 'PROGRAM_COORDINATOR':
+            navigate('/programCoordinator');
+            break;
+          case 'PGAM':
+            navigate('/pgam');
+            break;
+          default:
+            setError('Unknown user role. Please contact administrator.');
+        }
       }
     } else {
       setError(result.error);

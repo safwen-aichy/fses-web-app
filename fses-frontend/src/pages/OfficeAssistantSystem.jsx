@@ -22,12 +22,11 @@ const OfficeAssistantSystem = () => {
     name: '',
     department: '',
     supervisor: '',
-    coSupervisors: [],
+    co_supervisor: '',
     program: '',
     evaluation_type: '',
-    title: '',
     university: '',
-    staff: null
+    research_title: '',
   });
 
   const programs = ['PHD', 'MPHIL', 'DSE'];
@@ -46,24 +45,22 @@ const OfficeAssistantSystem = () => {
         name: item.name || '',
         department: item.department || '',
         supervisor: item.supervisor || '',
-        coSupervisors: item.coSupervisors || [],
+        co_supervisor: item.co_supervisor || '',
         program: item.program || '',
         evaluation_type: item.evaluation_type || '',
-        title: item.title || '',
         university: item.university || '',
-        staff: item.staff || null
+        research_title: item.research_title || '',
       });
     } else {
       setFormData({
         name: '',
         department: '',
         supervisor: '',
-        coSupervisors: [],
+        co_supervisor: '',
         program: '',
         evaluation_type: '',
-        title: '',
         university: '',
-        staff: null
+        research_title: '',
       });
     }
     setShowModal(true);
@@ -76,12 +73,11 @@ const OfficeAssistantSystem = () => {
       name: '',
       department: '',
       supervisor: '',
-      coSupervisors: [],
+      co_supervisor: '',
       program: '',
       evaluation_type: '',
-      title: '',
       university: '',
-      staff: null
+      research_title: '',
     });
   };
 
@@ -96,9 +92,7 @@ const OfficeAssistantSystem = () => {
         department: parseInt(formData.department),
         supervisor: formData.supervisor ? parseInt(formData.supervisor) : null,
         // Convert co-supervisors array of strings to array of numbers
-        coSupervisors: formData.coSupervisors.map(id => parseInt(id)),
-        // For lecturer, convert title to number
-        title: modalType === 'lecturer' ? parseInt(formData.title) : undefined
+        co_supervisor: formData.co_supervisor ? parseInt(formData.co_supervisor) : null,
       };
       
       let result;
@@ -383,16 +377,13 @@ const OfficeAssistantSystem = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Co-Supervisors</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Co-Supervisor</label>
                   <select
-                    multiple
-                    value={formData.coSupervisors}
-                    onChange={(e) => {
-                      const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-                      setFormData({ ...formData, coSupervisors: selectedOptions });
-                    }}
+                    value={formData.co_supervisor}
+                    onChange={(e) => setFormData({ ...formData, co_supervisor: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-burgundy-500"
                   >
+                    <option value="">Select Co-Supervisor</option>
                     {lecturers.map(lecturer => (
                       <option key={lecturer.id} value={lecturer.id}>{lecturer.name}</option>
                     ))}
