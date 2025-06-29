@@ -17,7 +17,8 @@ const OfficeAssistantSystem = () => {
   const { lecturers, loading: lecturersLoading, error: lecturersError, createLecturer, updateLecturer, deleteLecturer } = useLecturers();
   const { departments, loading: departmentsLoading } = useDepartments();
   const { user } = useAuth();
-
+  
+  
   const [formData, setFormData] = useState({
     name: '',
     department: '',
@@ -137,23 +138,38 @@ const OfficeAssistantSystem = () => {
     }
   };
 
-  const filteredStudents = students.filter(student =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (student.department && typeof student.department === 'object' ?
-      student.department.name.toLowerCase().includes(searchTerm.toLowerCase()) :
-      student.department && student.department.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (student.supervisor && typeof student.supervisor === 'object' ?
-      student.supervisor.name.toLowerCase().includes(searchTerm.toLowerCase()) :
-      student.supervisor && student.supervisor.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredStudents = students.filter((student) => {
+    const lowerSearch = searchTerm.toLowerCase();
 
-  const filteredLecturers = lecturers.filter(lecturer =>
-    lecturer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (lecturer.department && typeof lecturer.department === 'object' ?
-      lecturer.department.name.toLowerCase().includes(searchTerm.toLowerCase()) :
-      lecturer.department && lecturer.department.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (lecturer.university && lecturer.university.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+    const departmentName = departments.find(
+      (dept) => dept.id === student.department
+    )?.name?.toLowerCase();
+
+    const supervisorName = lecturers.find(
+      (sup) => sup.id === student.supervisor
+    )?.name?.toLowerCase(); // Only if you also have a supervisors list
+
+    return (
+      student.name?.toLowerCase().includes(lowerSearch) ||
+      departmentName?.includes(lowerSearch) ||
+      supervisorName?.includes(lowerSearch)
+   );
+});
+
+  const filteredLecturers = lecturers.filter(lecturer => {
+    const lowerSearch = searchTerm.toLowerCase();
+
+    const nameMatch = lecturer.name?.toLowerCase().includes(lowerSearch);
+
+    const departmentName = departments.find(dep => dep.id === lecturer.department)?.name || '';
+    const departmentMatch = departmentName.toLowerCase().includes(lowerSearch);
+
+    const universityMatch =
+      typeof lecturer.university === 'string' &&
+      lecturer.university.toLowerCase().includes(lowerSearch);
+
+    return nameMatch || departmentMatch || universityMatch;
+  });
 
   const StudentManagement = () => (
     <div className="space-y-6">
@@ -208,10 +224,10 @@ const OfficeAssistantSystem = () => {
                   <tr key={student.id}>
                     <td className="px-6 py-4 whitespace-nowrap">{student.name}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {typeof student.department === 'object' ? student.department.name : student.department}
+                      {departments.find(dep => dep.id === student.department)?.name || student.department}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {typeof student.supervisor === 'object' ? student.supervisor.name : student.supervisor}
+                      {lecturers.find(lect => lect.id === student.supervisor)?.name || student.supervisor}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">{student.program}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{student.evaluation_type}</td>
@@ -296,7 +312,7 @@ const OfficeAssistantSystem = () => {
                       {lecturerTitles.find(t => t.value === lecturer.title)?.label || lecturer.title}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {typeof lecturer.department === 'object' ? lecturer.department.name : lecturer.department}
+                      {departments.find(dep => dep.id === lecturer.department)?.name || lecturer.department}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">{lecturer.university}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
